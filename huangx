@@ -1,0 +1,58 @@
+ #include<bits/stdc++.h>
+using namespace std;
+int A=607087,B=607087,endex[607087],n=0;
+int loc[10];
+void GenerateNumbers()
+{
+	int a,b,c,d;
+	for(a=0;a<=9;a++)
+		for(b=0;b<=9;b++)
+			for(c=0;c<=9;c++)
+				for(d=0;d<=9;d++)
+					if(a-b&&a-c&&a-d&&b-c&&b-d&&c-d)
+					{
+						endex[++n]=a*1000+b*100+c*10+d;	
+					} 
+	return;
+}
+void checker(int K,int H,int D,int X,int biaozhunA,int biaozhunB)
+{
+	int i,j,k,detla=0;
+	int biaozhun[4]={K,H,D,X};
+	for(i=1;i<=n;i++)
+	{
+		int pipeiA=0,pipeiB=0;
+		int pipei[4]={endex[i]/1000,endex[i]/100%10,endex[i]/10%10,endex[i]%10};
+		for(j=0;j<=3;j++) 
+			if(pipei[j]==biaozhun[j]) pipeiA++;
+		for(j=0;j<=3;j++)
+			for(k=0;k<=3;k++)
+			{
+				if(j==k) continue;
+				if(pipei[j]==biaozhun[k]) pipeiB++;
+
+			}
+		if(pipeiA!=biaozhunA||pipeiB!=biaozhunB)
+		{
+			endex[i]=607087;
+			detla++;
+		}
+	}
+	sort(endex+1,endex+n+1);
+	n-=detla;
+}
+int main()
+{
+	GenerateNumbers();
+	int i,j,round=1;
+	while(1)
+	{
+		int cur=endex[1];
+		printf("%d%d%d%d\n",cur/1000,cur/100%10,cur/10%10,cur%10);
+		scanf("%d%d",&A,&B);
+		checker(cur/1000,cur/100%10,cur/10%10,cur%10,A,B);
+		if(n<=1) break;
+	}
+	printf("YOUR ANSWER IS :%d\n",endex[1]);
+	return 0;
+}
