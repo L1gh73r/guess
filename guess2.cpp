@@ -8,8 +8,9 @@
 #include <stdlib.h>
 #include<fstream>
 #include<sstream>
-#include<io.h>
+#include<dirent.h>
 #include<vector>
+#include<sys/time.h>
 using namespace std;
 
 list<string> numList;
@@ -19,63 +20,27 @@ string RanddomNum();
 int CountN(const string& guess, const string& str);
 int CountP(const string& guess, const string& str);
 string GetNextGuess();
-
+int64_t getCurrentTime()      //直接调用这个函数就行了，返回值最好是int64_t，long long应该也可以
+    {    
+       struct timeval tv;    
+       gettimeofday(&tv,NULL);    //该函数在sys/time.h头文件中
+       return tv.tv_sec * 1000 + tv.tv_usec / 1000;    
+    }    
 int main()
 {
     
     int x = 1;
     Initialize();   // 初始化
-    string a = "*.txt";
-    string path = "";
-    long handle;
-    vector<string> zg;
-    struct _finddata_t fileinfo;
-    handle = _findfirst(a.c_str(), &fileinfo);
-    if (handle == -1)
-    {
-        path = path + "1.txt";
-
-    }
-    
-    else {
-        do
-        {
-            //找到的文件的文件名
-            zg.push_back((char*)fileinfo.name);
-
-        } while (!_findnext(handle, &fileinfo));
+    //找到的文件的文件名
+        string tmp;
         //for (vector<string> ::iterator a = zg.begin(); a != zg.end(); ++a)
           //  cout << *a << endl;
-
-        _findclose(handle);
-        string tmp;
-        int size = 0;
-        while (1)
-        {
             stringstream ss;
-            ss << x;
+            ss << getCurrentTime();
             ss >> tmp;
             string tmp1 =  tmp + ".txt";
-        //    cout << tmp1<<endl;
-            size = 0;
-            for (vector<string> ::iterator a = zg.begin(); a != zg.end(); ++a)
-            {
-          //      cout << *a << "    " << tmp1<<endl;
-                if (*a == tmp1)
-                    break;
-                size++;
-            }
-            if (size == zg.size())
-            {
-                path = path+tmp1;
-
-                break;
-            }
-            x++;
-      //      cout << x;
-        }
-    }
     ofstream file;
+    string path = "//root//桌面//"+tmp1;
     cout << path << endl;
     file.open(path);
     if (!file.is_open())
@@ -149,7 +114,6 @@ string RanddomNum()
     sprintf(buf, "%d", i);
     return buf;
 }
-
 int CountN(const string& guess, const string& num)
 {
     string s = num;  // 复制num，用于下面避免重复匹配的操作
